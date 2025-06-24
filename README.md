@@ -1,14 +1,23 @@
-Euclidean Rhythms: Björklund's Algorithm in Python
-==================================================
+# ia_bjorklund
 
-After encountering some [buzz](http://ruinwesen.com/blog?id=216) about it online, I read and was inspired by Godfried Toussaint’s paper, [“The Euclidean Algorithm Generates Traditional Musical Rhythms”](http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf). In short, he demonstrates how many classic rhythms, particularly of African origin, can be described by a ubiquitous mathematical principle first documented by Euclid and even used for timing patterns in neutron accelerators.
+## Overview
 
-However, while I found many implementations of the algorithm in various languages, all of the ones I tried (in Ruby, Python, Java, and Javascript) return inaccurate results! Trying 13 steps with 5 pulses was an easy way to break most of them. Luckily, Toussaint’s source, Björklund, provides C code in his paper [The Theory of Rep-Rate Pattern Generation in the SNS Timing System](https://ics-web.sns.ornl.gov/timing/Rep-Rate%20Tech%20Note.pdf). I translated this into Python 3, and found the result to be elegant, efficient, and accurate.
+The `ia_bjorklund` module is a refined implementation of Björklund's algorithm for generating Euclidean rhythms, inspired by Godfried Toussaint’s research on the mathematical principles underlying traditional musical rhythms. This fork enhances the original implementation by incorporating additional features and optimizations that improve performance and usability.
 
+### Key Differences from the Original
 
+1. **Bitarray Integration**: Unlike the original implementation, which uses basic lists, `ia_bjorklund` utilizes the `bitarray` library for efficient storage and manipulation of rhythm patterns. This allows for more compact representations and faster operations on binary data.
 
-### Copyright/License
+2. **Modular Design**: The code is structured into separate functions and modules, promoting better organization and reusability. Helper functions are clearly defined, making the code easier to read and maintain.
 
-Copyright (c) 2011 Brian House
+3. **Coprime Generation**: This version integrates the `ia_coprimes` module to generate coprime pairs dynamically, ensuring that the inputs to the Björklund algorithm are always suitable for producing evenly distributed rhythms.
 
-This code is released under the MIT License and is completely free to use for any purpose. See the LICENSE file for details.
+4. **Enhanced Error Handling**: The implementation includes improved error handling and validation, ensuring that inputs are checked and appropriate exceptions are raised when necessary.
+
+5. **Generator Functionality**: The `bjorklund_generator` function allows for the generation of rhythms for multiple coprime pairs in a single iteration, making it easier to explore various rhythmic patterns without needing to call the function repeatedly.
+
+6. **Logging Support**: The module includes logging capabilities to provide feedback during rhythm generation, which can be useful for debugging and understanding the algorithm's behavior.
+
+### Conclusion
+
+The `ia_bjorklund` module builds upon the foundation laid by the original implementation, offering a more efficient, modular, and user-friendly approach to generating Euclidean rhythms. By leveraging advanced data structures and integrating additional functionality, this fork aims to enhance the experience for musicians, composers, and developers interested in algorithmic rhythm generation.
