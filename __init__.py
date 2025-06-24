@@ -1,37 +1,52 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python
+# cython: language_level=3
+# distutils: language=c++
 
-def bjorklund(steps, pulses):
-    steps = int(steps)
-    pulses = int(pulses)
+from typing      import Iterable
+
+from bitarray    import bitarray
+
+from ia_bits     import pack_bitstring, rotate
+from ia_coprimes import coprimes
+from ia_gcd      import egcd2
+
+def build(pattern:bitarray, level:int, remainders:Iterable[int], counts:Iterable[int])->None:
+    if level == -1:
+        pattern.append(0)
+        return
+
+    if level == -2:
+        pattern.append(1)
+        return
+
+    for i in range(0, counts[level]):
+        build(pattern, level - 1, remainders, counts)
+
+    if remainders[level] != 0:
+        build(pattern, level - 2, remainders, counts)
+
+def bjorklund(steps:int, pulses:int)->bitarray:
     if pulses > steps:
-        raise ValueError    
-    pattern = []    
-    counts = []
-    remainders = []
-    divisor = steps - pulses
-    remainders.append(pulses)
-    level = 0
-    while True:
-        counts.append(divisor // remainders[level])
-        remainders.append(divisor % remainders[level])
-        divisor = remainders[level]
-        level = level + 1
-        if remainders[level] <= 1:
-            break
-    counts.append(divisor)
-    
-    def build(level):
-        if level == -1:
-            pattern.append(0)
-        elif level == -2:
-            pattern.append(1)         
-        else:
-            for i in range(0, counts[level]):
-                build(level - 1)
-            if remainders[level] != 0:
-                build(level - 2)
-    
-    build(level)
-    i = pattern.index(1)
-    pattern = pattern[i:] + pattern[0:i]
+        raise ValueError
+    d, level           = egcd2(steps - pulses, pulses)
+    d                  = zip(*d)
+    #pattern            = []
+    pattern            = bitarray()
+    build(pattern, level, *d)
+    i                  = pattern.index(1)
+    pattern            = rotate(pattern, i)
     return pattern
+
+def bjorklund_generator():
+    for a, b in coprimes():
+        c = bjorklund(a, b)
+        logger.info('bjorklund generator: %s/%s: %s', a, b, c)
+        yield c
+
+if __name__ == '__main__':
+    for a, b in coprimes():
+        c = bjorklund(a, b)
+        d = pack_bitstring(c, a)
+        print(a, b, d)
+
+__author__:str = 'InnovAnon, Inc.' # NOQA
